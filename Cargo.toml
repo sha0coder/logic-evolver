@@ -1,0 +1,6 @@
+[package]
+name = "logic-evolver"
+version = "0.1.0"
+authors = ["@sha0coder <sha0@protonmail.com>"]
+
+[dependencies]
