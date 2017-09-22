@@ -216,13 +216,32 @@ impl Cpu {
         return new_cpu;
     }
 
-    pub fn crossover(&self, cpu_mother: Cpu) -> Cpu {
-        let mut cpu_child = Cpu::new();
+    pub fn crossover(&self, cpu_mother: Cpu) -> (Cpu,Cpu) {
+        let mut child1 = Cpu::new();
+        let mut child2 = Cpu::new();
         let mut half_father = self.code.len()/2;
         let mut half_mother = cpu_mother.code.len()/2;
 
+        // optimize this:
+        for i in 0..half_father {
+            child1.code.push(self.code[i].clone());
+        }
+        for i in 0..half_mother {
+            child2.code.push(cpu_mother.code[i].clone());
+        }
+        for i in half_father..self.code.len() {
+            child2.code.push(self.code[i].clone());
+        }
+        for i in half_mother..self.code.len() {
+            child1.code.push(cpu_mother.code[i].clone());
+        }
 
-        return cpu_child;
+        child1.init_vars(self.vars.len());
+        child2.init_vars(self.vars.len());
+
+        return (child1,child2);
     }
 
 }
+
+
