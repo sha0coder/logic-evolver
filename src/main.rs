@@ -26,12 +26,22 @@ fn main() {
     let mut ga = GA::new();
     ga.init_population(100, 10);
 
-
     let mut cpu1 = Cpu::new();
     cpu1.init_vars(3);
     let mut cpu2 = cpu1.clone();
-    cpu1.randomize(100);
-    cpu2.randomize(100);
+    cpu1.randomize(4);
+    cpu2.randomize(4);
 
-    let (cpu3, cpu4) = cpu1.crossover(cpu2);
+    let (cpu3, cpu4) = cpu1.crossover(&cpu2);
+
+    cpu1.print();
+    println!("---");
+    cpu2.print();
+    println!("---");
+    cpu3.print();
+    println!("---");
+    cpu4.print();
+    println!("---");
 }
+
+

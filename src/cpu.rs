@@ -29,9 +29,9 @@ impl Instruction {
 
     pub fn clone(&self) -> Instruction {
         Instruction {
-            op: self.op,
-            a: self.a,
-            b: self.b
+            op: self.op.clone(),
+            a: self.a.clone(),
+            b: self.b.clone()
         }
     }
 
@@ -208,6 +208,7 @@ impl Cpu {
 
         new_cpu = Cpu::new();
     
+        
         new_cpu.init_vars(self.vars.len());
         for instr in self.code.iter() {
             new_cpu.code.push(instr.clone());
@@ -216,11 +217,11 @@ impl Cpu {
         return new_cpu;
     }
 
-    pub fn crossover(&self, cpu_mother: Cpu) -> (Cpu,Cpu) {
+    pub fn crossover(&self, cpu_mother: &Cpu) -> (Cpu,Cpu) {
         let mut child1 = Cpu::new();
         let mut child2 = Cpu::new();
-        let mut half_father = self.code.len()/2;
-        let mut half_mother = cpu_mother.code.len()/2;
+        let half_father = self.code.len()/2;
+        let half_mother = cpu_mother.code.len()/2;
 
         // optimize this:
         for i in 0..half_father {
