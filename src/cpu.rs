@@ -66,7 +66,8 @@ impl Instruction {
 pub struct Cpu {
     params: Vec<i32>,
     vars: Vec<i32>,
-    code: Vec<Instruction>
+    code: Vec<Instruction>,
+    fitness: i32
 }
 
 impl Cpu {
@@ -75,7 +76,12 @@ impl Cpu {
             params: Vec::new(),
             vars: Vec::new(),
             code: Vec::new(),
+            fitness: 0
         }
+    }
+
+    pub fn set_fitness(&mut self, fitness: i32) {
+        self.fitness = fitness;
     }
 
     pub fn init_params(&mut self, p: Vec<i32>) {
@@ -104,7 +110,7 @@ impl Cpu {
     pub fn randomize(&mut self, n:usize) {
         // generate a random code of n lines
         let mut rng = rand::thread_rng();
-        println!("creating");
+        //println!("creating");
         let mut i:usize = 0;
         loop {
             if i >= n {
@@ -113,7 +119,7 @@ impl Cpu {
             self.add(rng.gen_range::<u8>(0,14), rng.gen_range::<usize>(0,3), rng.gen_range::<usize>(0,3));
             i+=1;
         }
-        println!("created");
+        //println!("created");
     }
 
     pub fn init(&mut self) {
@@ -207,8 +213,6 @@ impl Cpu {
         let mut new_cpu: Cpu;
 
         new_cpu = Cpu::new();
-    
-        
         new_cpu.init_vars(self.vars.len());
         for instr in self.code.iter() {
             new_cpu.code.push(instr.clone());

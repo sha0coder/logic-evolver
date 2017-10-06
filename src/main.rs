@@ -22,10 +22,7 @@ fn test_cpu() {
 
 }
 
-fn main() {
-    let mut ga = GA::new();
-    ga.init_population(100, 10);
-
+fn test_cpu2() {
     let mut cpu1 = Cpu::new();
     cpu1.init_vars(3);
     let mut cpu2 = cpu1.clone();
@@ -42,6 +39,18 @@ fn main() {
     println!("---");
     cpu4.print();
     println!("---");
+}
+
+fn eval(cpu: &mut Cpu) {
+
+}
+
+fn main() {
+    let mut ga = GA::new();
+    ga.init_population(100, 10);
+    ga.run(10, eval);
+
+
 }
 
 
