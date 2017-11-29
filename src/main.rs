@@ -42,13 +42,52 @@ fn test_cpu2() {
 }
 
 fn eval(cpu: &mut Cpu) {
+    let mut score: i32;
+    score = 0;
 
+    // test1
+    cpu.init_vars(3);
+    cpu.init_params(vec![1,2]);
+    cpu.run();
+    if (cpu.result() == 3) {
+        score+=1;
+    }
+
+    // test2
+    cpu.init_params(vec![2,2]);
+    cpu.run();
+    if (cpu.result() == 4) {
+        score+=1;
+    }
+
+    // test3
+    cpu.init_params(vec![1,2]);
+    cpu.run();
+    if (cpu.result() == 3) {
+        score+=1;
+    }
+
+    // test4
+    cpu.init_params(vec![3,3]);
+    cpu.run();
+    if (cpu.result() == 6) {
+        score+=1;
+    }
+
+    // test5
+    cpu.init_params(vec![4,4]);
+    cpu.run();
+    if (cpu.result() == 8) {
+        score+=1;
+    }
+    
+    cpu.set_fitness(score);
 }
 
 fn main() {
     let mut ga = GA::new();
     ga.init_population(100, 10);
-    ga.run(10, eval);
+    ga.run(100, eval);
 
 
 }

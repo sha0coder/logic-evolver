@@ -84,6 +84,10 @@ impl Cpu {
         self.fitness = fitness;
     }
 
+    pub fn get_fitness(&self) -> i32 {
+        return self.fitness;
+    }
+
     pub fn init_params(&mut self, p: Vec<i32>) {
         self.params = p;
     }
