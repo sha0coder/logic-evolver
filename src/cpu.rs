@@ -58,8 +58,6 @@ impl Instruction {
     pub fn get_opcode(&self) -> u8 {
         return self.op;
     }
- 
-
 }
 
 
@@ -109,6 +107,11 @@ impl Cpu {
 
     pub fn load(&mut self, code: Vec<Instruction>) {
         self.code = code;
+    }
+
+    pub fn get_rand(&self, n:usize) -> usize {
+        let mut rng = rand::thread_rng();
+        return rng.gen_range::<usize>(0,n);
     }
 
     pub fn randomize(&mut self, n:usize) {
@@ -223,6 +226,36 @@ impl Cpu {
         }
 
         return new_cpu;
+    }
+
+    pub fn mutate(&mut self, prob: usize) {
+        let mut rng = rand::thread_rng();
+
+        for i in 0..self.code.len() {
+            if (self.get_rand(100) < prob) {
+                if (self.get_rand(100) < 75) {
+                    if (self.get_rand(100) < 55) {
+                        self.code[i].set_b(rng.gen_range::<usize>(0,3));
+                    } else {
+                        self.code[i].set_a(rng.gen_range::<usize>(0,3));
+                    }
+                } else {
+                    self.code[i].set_opcode(rng.gen_range::<u8>(0,14));
+                }
+            }
+        }
+        /*
+        for instr in self.code.iter() {
+            if (self.get_rand(100) < 75) {
+                if (self.get_rand(100) < 55) {
+                    instr.set_b(rng.gen_range::<usize>(0,3));
+                } else {
+                    instr.set_a(rng.gen_range::<usize>(0,3));
+                }
+            } else {
+                instr.set_opcode(rng.gen_range::<u8>(0,14));
+            }
+        }*/
     }
 
     pub fn crossover(&self, cpu_mother: &Cpu) -> (Cpu,Cpu) {

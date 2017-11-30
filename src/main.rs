@@ -42,8 +42,9 @@ fn test_cpu2() {
 }
 
 fn eval(cpu: &mut Cpu) {
-    let mut score: i32;
-    score = 0;
+    let mut score: i32 = 0;
+
+    //score = cpu.get_rand(10) as i32;
 
     // test1
     cpu.init_vars(3);
@@ -86,8 +87,8 @@ fn eval(cpu: &mut Cpu) {
 
 fn main() {
     let mut ga = GA::new();
-    ga.init_population(100, 10);
-    ga.run(100, eval);
+    ga.init_population(1000, 20);
+    ga.run(500, eval);
 
 
 }

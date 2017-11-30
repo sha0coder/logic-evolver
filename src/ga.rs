@@ -45,7 +45,7 @@ impl GA {
         for i in 0..self.sz {
             for j in 1..self.sz-1 {
                 if self.population[sorted[j]].get_fitness() > self.population[sorted[i]].get_fitness() {
-                    tmp = sorted[i];
+                    tmp = sorted[j];
                     sorted[j] = sorted[i];
                     sorted[i] = tmp;
                 }
@@ -68,18 +68,40 @@ impl GA {
 
             // clasify
             let mut sorted = self.sort();
-            println!("Cycle: {} max fitness: {}", cycle, self.population[sorted[0]].get_fitness())
+            println!("\n** Cycle: {} pop: {} max fitness: {}", cycle, self.population.len(), self.population[sorted[0]].get_fitness());
+            self.population[sorted[0]].print();
 
-            // crossover
-            for i in 1..10 {
-                
+
+            let mut ng: Vec<Cpu> = Vec::new();
+
+            // crossover top 50
+            for i in 0..49 {
+                for j in 2..50 {
+                    let childs = self.population[sorted[i]].crossover(&self.population[sorted[j]]);
+                    ng.push(childs.0);
+                    ng.push(childs.1);
+                }
+            }
+
+            // trascend top 10
+            for i in 0..10 {
+                ng.push(self.population[sorted[i]].clone());
+            }
+
+            // diversity
+            for i in 0..10 {
+                let r = self.population[0].get_rand(self.population.len());
+                ng.push(self.population[r].clone());
             }
 
             // mutation
+            for i in 0..ng.len() {
+                ng[i].mutate(10);
+            }
 
+
+            self.population = ng;
         }
     }
-
-
 }
 
