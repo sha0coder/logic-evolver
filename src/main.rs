@@ -1,11 +1,14 @@
 mod cpu;
 mod ga;
 
-use cpu::Cpu;
-use ga::GA;
-use cpu::Instruction;
-use std::vec::Vec;
 
+use std::vec::Vec;
+use cpu::Cpu;
+use cpu::Instruction;
+use ga::GA;
+
+
+/*
 fn test_cpu() {
     let mut cpu = Cpu::new();
 
@@ -39,57 +42,79 @@ fn test_cpu2() {
     println!("---");
     cpu4.print();
     println!("---");
-}
+}*/
 
 fn eval(cpu: &mut Cpu) {
     let mut score: i32 = 0;
+    let mut tv: Vec<u8> = Vec::new();
 
-    //score = cpu.get_rand(10) as i32;
+
+    //cpu.print();
+    //cpu.debug();
 
     // test1
-    cpu.init_vars(3);
-    cpu.init_params(vec![1,2]);
+    cpu.init_vars(vec![2,1,2]);
     cpu.run();
     if (cpu.result() == 3) {
         score+=1;
+        tv.push(1);
     }
 
     // test2
-    cpu.init_params(vec![2,2]);
+    cpu.init_vars(vec![2,2,2]);
     cpu.run();
     if (cpu.result() == 4) {
         score+=1;
+        tv.push(2);
     }
 
     // test3
-    cpu.init_params(vec![1,2]);
+    cpu.init_vars(vec![3,1,3]);
     cpu.run();
     if (cpu.result() == 3) {
         score+=1;
+        tv.push(3);
     }
 
     // test4
-    cpu.init_params(vec![3,3]);
+    cpu.init_vars(vec![3,3,3]);
     cpu.run();
     if (cpu.result() == 6) {
         score+=1;
+        tv.push(4);
     }
 
     // test5
-    cpu.init_params(vec![4,4]);
+    cpu.init_vars(vec![4,4,2]);
     cpu.run();
     if (cpu.result() == 8) {
         score+=1;
+        tv.push(5);
     }
     
-    cpu.set_fitness(score);
+    cpu.set_fitness(score, tv);
 }
 
 fn main() {
-    let mut ga = GA::new();
-    ga.init_population(1000, 20);
-    ga.run(500, eval);
 
+    // 001 v0 = v1
+    // 102 v0 += v2
+    /*
+    let mut i1 = Instruction::new(0,0,1);
+    let mut i2 = Instruction::new(1,0,2);
+    let mut cpu = Cpu::new();
+    cpu.add_instruction(i1);
+    cpu.add_instruction(i2);
+    eval(&mut cpu);
+    println!(">>{}",cpu.get_fitness());
+*/
+
+    
+
+    let mut ga = GA::new();
+    ga.init_population(1000, 5);
+    ga.run(500, eval);
+  
 
 }
 

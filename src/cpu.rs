@@ -65,7 +65,9 @@ pub struct Cpu {
     params: Vec<i32>,
     vars: Vec<i32>,
     code: Vec<Instruction>,
-    fitness: i32
+    fitness: i32,
+    tv: Vec<u8>,  // tests vector
+    debugMode: bool
 }
 
 impl Cpu {
@@ -74,12 +76,23 @@ impl Cpu {
             params: Vec::new(),
             vars: Vec::new(),
             code: Vec::new(),
-            fitness: 0
+            fitness: 0,
+            tv: Vec::new(),
+            debugMode: false
         }
     }
 
-    pub fn set_fitness(&mut self, fitness: i32) {
+    pub fn set_fitness(&mut self, fitness: i32, tv: Vec<u8>) {
+        self.tv = tv;
         self.fitness = fitness;
+    }
+
+    pub fn debug(&mut self) {
+        self.debugMode = true;
+    }
+
+    pub fn get_tv(&self) -> Vec<u8> {
+        return self.tv.clone();
     }
 
     pub fn get_fitness(&self) -> i32 {
@@ -90,11 +103,24 @@ impl Cpu {
         self.params = p;
     }
 
+    pub fn init_vars(&mut self, v: Vec<i32>) {
+        self.vars = v;
+    }
+
+    pub fn get_var(&self, i: usize) -> i32 {
+        return self.vars[i];
+    }
+
+    pub fn add_instruction(&mut self, i: Instruction) {
+        self.code.push(i);
+    }
+
+    /*
     pub fn init_vars(&mut self, num: usize) {
         for _ in 0..num {
             self.vars.push(0);
         }
-    }
+    }*/
 
     pub fn result(&self) -> i32 {
         return self.vars[0];
@@ -103,6 +129,10 @@ impl Cpu {
     pub fn add(&mut self, op:u8, a:usize, b:usize) {
         // add code instruction
         self.code.push(Instruction::new(op,a,b));
+    }
+
+    pub fn instructions(&self) -> usize {
+        return self.code.len();
     }
 
     pub fn load(&mut self, code: Vec<Instruction>) {
@@ -139,7 +169,7 @@ impl Cpu {
         let mut line: usize = 0;
         let len: usize = self.code.len();
 
-        self.init();
+        //self.init();
 
         loop {
 
@@ -147,9 +177,16 @@ impl Cpu {
                 break;
             }
 
-            let ins:&Instruction = &self.code[line];
+            let ins: &Instruction = &self.code[line];
 
-            //println!("ins:{}", ins.op);
+            if (self.debugMode) {
+                println!("{})  [{} {} {}]", line, ins.op, ins.a, ins.b);
+            
+                for i in 0..self.vars.len() {
+                    println!("1 var[{}] = {}",i,self.vars[i]);
+                }
+            }
+
 
             match ins.op {
                 0 => { self.vars[ins.a] = self.vars[ins.b] }
@@ -171,6 +208,12 @@ impl Cpu {
                 13 => { if self.vars[ins.a] >= self.vars[ins.b] { line+=1 } }
 
                 _ => {;}
+            }
+
+            if (self.debugMode) {
+                for i in 0..self.vars.len() {
+                    println!("2 var[{}] = {}",i,self.vars[i]);
+                }
             }
 
             line += 1;
@@ -220,7 +263,7 @@ impl Cpu {
         let mut new_cpu: Cpu;
 
         new_cpu = Cpu::new();
-        new_cpu.init_vars(self.vars.len());
+        //new_cpu.init_vars(self.vars.len());
         for instr in self.code.iter() {
             new_cpu.code.push(instr.clone());
         }
@@ -258,6 +301,26 @@ impl Cpu {
         }*/
     }
 
+    pub fn crossover2(&self, cpu_mother: &Cpu) -> Vec<Cpu> {
+        let mut childs: Vec<Cpu> = Vec::new();
+
+        for i in 0..4 {
+            childs.push(Cpu::new());
+        }
+
+        for i in 0..self.code.len() {
+            for j in 0..4 {
+                if (self.get_rand(100)<50) {
+                    childs[j].code.push(self.code[i].clone());
+                } else {
+                    childs[j].code.push(cpu_mother.code[i].clone());
+                }
+            }
+        }
+
+        return childs;
+    }
+
     pub fn crossover(&self, cpu_mother: &Cpu) -> (Cpu,Cpu) {
         let mut child1 = Cpu::new();
         let mut child2 = Cpu::new();
@@ -278,8 +341,8 @@ impl Cpu {
             child1.code.push(cpu_mother.code[i].clone());
         }
 
-        child1.init_vars(self.vars.len());
-        child2.init_vars(self.vars.len());
+        //child1.init_vars(self.vars.len());
+        //child2.init_vars(self.vars.len());
 
         return (child1,child2);
     }
